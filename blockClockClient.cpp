@@ -3,17 +3,14 @@
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
 
-#include "WiFiManager.h"
 #include "blockClockTypes.h"
-#include "blockClockUtils.h"
-#include "timeManager.h"
 
 const String MEMPOOL_BASEURL = "https://mempool.space/api";
 const String COINLIB_BASEURL = "https://coinlib.io/api/v1";
 
-ApiClient::ApiClient(const String& apiKey) : coinlibApiKey(apiKey) {}
+ApiClient::BlockClockClient(const String& apiKey) : coinlibApiKey(apiKey) {}
 
-String ApiClient::getBlockHeight() {
+String BlockClockClient::getBlockHeight() {
   http.begin(MEMPOOL_BASEURL + "/blocks/tip/height");
   int httpCode = http.GET();
   if (httpCode == HTTP_CODE_OK) {
@@ -22,7 +19,7 @@ String ApiClient::getBlockHeight() {
   return "ERR " + httpCode;
 }
 
-RecommendedFees ApiClient::getRecommendedFees() {
+RecommendedFees BlockClockClient::getRecommendedFees() {
   RecommendedFees recommendedFees;
 
   http.begin(MEMPOOL_BASEURL + "/v1/fees/recommended");
@@ -53,8 +50,8 @@ RecommendedFees ApiClient::getRecommendedFees() {
   return recommendedFees;
 }
 
-PriceData ApiClient::getBitcoinPrice(CurrencyState currencyState) {
-  String currency = currencyStateToString(currencyState);
+PriceData BlockClockClient::getBitcoinPrice(CurrencyState currencyState) {
+  String currency = "USD";
 
   DynamicJsonDocument doc(4096);
 

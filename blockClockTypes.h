@@ -1,33 +1,17 @@
-#ifndef BLOCKCLOCKTYPES
-#define BLOCKCLOCKTYPES
+#ifndef BLOCK_CLOCK_TYPES_H
+#define BLOCK_CLOCK_TYPES_H
 
-#include "userBoardDefines.h"
-#ifdef M5STACK
-#include <M5StickCPlus.h>
-#endif
-#ifdef GENERIC_ESP32
 #include <Arduino.h>
-#endif
-
 #include <time.h>
-
-#include "blockClockUtils.h"
 
 struct PriceData {
   String price;
-  CurrencyState currency;
   float change1h;
   float change24h;
   float change7d;
   float change30d;
   time_t timestamp;
   bool error;
-};
-
-struct WiFiData {
-  bool connected;
-  String SSID;
-  int8_t SignalStrength;
 };
 
 struct RecommendedFees {

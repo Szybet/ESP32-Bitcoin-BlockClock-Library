@@ -1,15 +1,13 @@
-#ifndef CLIENT
-#define CLIENT
+#ifndef BLOCK_CLOCK_CLIENT_H
+#define BLOCK_CLOCK_CLIENT_H
 
 #include <HTTPClient.h>
 
 #include "blockClockTypes.h"
-#include "blockClockUtils.h"
-#include "userBoardDefines.h"
 
-class ApiClient {
+class BlockClockClient {
  public:
-  explicit ApiClient(const String& apiKey);
+  explicit BlockClockClient(const String& apiKey);
 
   String getBlockHeight();
   RecommendedFees getRecommendedFees();
