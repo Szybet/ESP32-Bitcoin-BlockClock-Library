@@ -2,13 +2,12 @@
 
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
-
-#include "blockClockTypes.h"
+#include "blockClockUtils.h"
 
 const String MEMPOOL_BASEURL = "https://mempool.space/api";
 const String COINLIB_BASEURL = "https://coinlib.io/api/v1";
 
-ApiClient::BlockClockClient(const String& apiKey) : coinlibApiKey(apiKey) {}
+BlockClockClient::BlockClockClient(const String& apiKey) : coinlibApiKey(apiKey) {}
 
 String BlockClockClient::getBlockHeight() {
   http.begin(MEMPOOL_BASEURL + "/blocks/tip/height");
@@ -50,7 +49,7 @@ RecommendedFees BlockClockClient::getRecommendedFees() {
   return recommendedFees;
 }
 
-PriceData BlockClockClient::getBitcoinPrice(CurrencyState currencyState) {
+PriceData BlockClockClient::getBitcoinPrice() {
   String currency = "USD";
 
   DynamicJsonDocument doc(4096);
@@ -63,7 +62,6 @@ PriceData BlockClockClient::getBitcoinPrice(CurrencyState currencyState) {
   int httpCode = http.GET();
 
   PriceData priceData;
-  priceData.currency = currencyState;
 
   if (httpCode == HTTP_CODE_OK) {
     String httpResponseBody = http.getString();
@@ -79,7 +77,6 @@ PriceData BlockClockClient::getBitcoinPrice(CurrencyState currencyState) {
     priceData.change24h = delta24h.toFloat();
     priceData.change7d = delta7d.toFloat();
     priceData.change30d = delta30d.toFloat();
-    priceData.timestamp = getTimestampFromRTC();
     priceData.error = false;
 
     return priceData;

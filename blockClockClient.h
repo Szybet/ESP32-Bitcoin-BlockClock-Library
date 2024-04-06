@@ -11,7 +11,7 @@ class BlockClockClient {
 
   String getBlockHeight();
   RecommendedFees getRecommendedFees();
-  PriceData getBitcoinPrice(CurrencyState currencyState);
+  PriceData getBitcoinPrice();
 
  private:
   String coinlibApiKey;
