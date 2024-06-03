@@ -7,25 +7,32 @@
 const String MEMPOOL_BASEURL = "https://mempool.space/api";
 const String COINLIB_BASEURL = "https://coinlib.io/api/v1";
 
-BlockClockClient::BlockClockClient(const String& apiKey) : coinlibApiKey(apiKey) {}
+BlockClockClient::BlockClockClient(const String &apiKey) : coinlibApiKey(apiKey) {}
 
-String BlockClockClient::getBlockHeight() {
+String BlockClockClient::getBlockHeight()
+{
   http.begin(MEMPOOL_BASEURL + "/blocks/tip/height");
   int httpCode = http.GET();
-  if (httpCode == HTTP_CODE_OK) {
-    return http.getString();
+  if (httpCode == HTTP_CODE_OK)
+  {
+    String height = http.getString();
+    http.end();
+    return height;
   }
+  http.end();
   return String("ERR ") + String(httpCode);
 }
 
-RecommendedFees BlockClockClient::getRecommendedFees() {
+RecommendedFees BlockClockClient::getRecommendedFees()
+{
   RecommendedFees recommendedFees;
 
   http.begin(MEMPOOL_BASEURL + "/v1/fees/recommended");
 
   int httpCode = http.GET();
 
-  if (httpCode == HTTP_CODE_OK) {
+  if (httpCode == HTTP_CODE_OK)
+  {
     StaticJsonDocument<192> httpResponseJson;
     String httpResponseBody = http.getString();
 
@@ -36,7 +43,7 @@ RecommendedFees BlockClockClient::getRecommendedFees() {
     recommendedFees.low = httpResponseJson["hourFee"];
     recommendedFees.noPriority = httpResponseJson["economyFee"];
     recommendedFees.error = false;
-
+    http.end();
     return recommendedFees;
   }
 
@@ -45,11 +52,12 @@ RecommendedFees BlockClockClient::getRecommendedFees() {
   recommendedFees.low = 0;
   recommendedFees.noPriority = 0;
   recommendedFees.error = true;
-
+  http.end();
   return recommendedFees;
 }
 
-PriceData BlockClockClient::getBitcoinPrice() {
+PriceData BlockClockClient::getBitcoinPrice()
+{
   String currency = "USD";
 
   DynamicJsonDocument doc(4096);
@@ -63,7 +71,8 @@ PriceData BlockClockClient::getBitcoinPrice() {
 
   PriceData priceData;
 
-  if (httpCode == HTTP_CODE_OK) {
+  if (httpCode == HTTP_CODE_OK)
+  {
     String httpResponseBody = http.getString();
     deserializeJson(doc, httpResponseBody);
 
@@ -78,7 +87,7 @@ PriceData BlockClockClient::getBitcoinPrice() {
     priceData.change7d = delta7d.toFloat();
     priceData.change30d = delta30d.toFloat();
     priceData.error = false;
-
+    http.end();
     return priceData;
   }
 
@@ -88,6 +97,6 @@ PriceData BlockClockClient::getBitcoinPrice() {
   priceData.change7d = (float)0;
   priceData.change30d = (float)0;
   priceData.error = true;
-
+  http.end();
   return priceData;
 }
