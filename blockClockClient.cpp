@@ -15,7 +15,7 @@ String BlockClockClient::getBlockHeight() {
   if (httpCode == HTTP_CODE_OK) {
     return http.getString();
   }
-  return "ERR " + httpCode;
+  return String("ERR ") + String(httpCode);
 }
 
 RecommendedFees BlockClockClient::getRecommendedFees() {
